@@ -20,4 +20,37 @@ timesheetsRouter.get('/', (req, res, next) => {
     })
 })
 
+timesheetsRouter.post('/', (req, res, next) => {
+    const hours = req.body.timesheet.hours;
+    const rate = req.body.timesheet.rate;
+    const date = req.body.timesheet.date;
+    const employeeId = req.params.employeeId;
+    const sql = `INSERT INTO Timesheet (hours, rate, date, employee_id)
+    VALUES ($hours, $rate, $date, $employeeId)`;
+    const values = {
+        $hours: hours,
+        $rate: rate,
+        $date: date,
+        $employeeId: employeeId
+    };
+
+    if (!hours || !rate || !date) {
+        return res.sendStatus(400);
+    }
+
+    db.run(sql, values, function(err) {
+        if (err) {
+            next(err);
+        } else {
+            db.get(`SELECT * FROM Timesheet WHERE id = ${this.lastID}`, (err, row) => {
+                if (err) {
+                    next(err);
+                } else {
+                    res.status(201).json({timesheet: row});
+                }
+            })
+        }
+    })
+})
+
 module.exports = timesheetsRouter;

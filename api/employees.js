@@ -73,7 +73,7 @@ employeesRouter.put('/:employeeId', (req, res, next) => {
     const position = req.body.employee.position;
     const wage = req.body.employee.wage;
     const isCurrentEmployee = req.body.employee.is_current_employee === 0 ? 0 : 1;
-    const sql = `Update Employee SET name = $name, position = $position, wage = $wage, is_current_employee = $isCurrentEmployee WHERE id = $employeeId`;
+    const sql = `UPDATE Employee SET name = $name, position = $position, wage = $wage, is_current_employee = $isCurrentEmployee WHERE id = $employeeId`;
     const values = {
         $name: name,
         $position: position,
@@ -97,6 +97,25 @@ employeesRouter.put('/:employeeId', (req, res, next) => {
                     res.status(200).json({employee: row});
                 }
             })
+        }
+    })
+})
+
+employeesRouter.delete('/:employeeId', (req, res, next) => {
+    const sql = `UPDATE Employee SET is_current_employee = 0 WHERE id = $employeeId`;
+    const values = {$employeeId: req.params.employeeId};
+
+    db.run(sql, values, (err) => {
+        if (err) {
+            next(err);
+        } else {
+            db.get(`SELECT * FROM Employee WHERE id = ${req.params.employeeId}`, (err, row) => {
+                if (err) {
+                    next(err);
+                } else {
+                    res.status(200).json({employee: row});
+                }
+            });
         }
     })
 })

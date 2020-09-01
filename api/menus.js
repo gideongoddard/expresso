@@ -23,7 +23,7 @@ menusRouter.param('menuId', (req, res, next, menuId) => {
 })
 
 // Router mounting
-menusRouter.use('/menu-items', menuItemsRouter);
+menusRouter.use('/:menuId/menu-items', menuItemsRouter);
 
 // api/menus
 menusRouter.get('/', (req, res, next) => {

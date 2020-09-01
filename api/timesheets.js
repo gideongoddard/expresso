@@ -102,7 +102,7 @@ timesheetsRouter.put('/:timesheetId', (req, res, next) => {
 })
 
 timesheetsRouter.delete('/:timesheetId', (req, res, next) => {
-    const sql = `DELETE From Timesheet WHERE id = $timesheetId`;
+    const sql = `DELETE FROM Timesheet WHERE id = $timesheetId`;
     const values = {$timesheetId: req.params.timesheetId};
 
     db.run(sql, values, (err) => {
